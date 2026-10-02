@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fechamento Financeiro · Tamires e Júnior · Ago–Set 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#1E2761; --navy-deep:#141A45; --bg-dark:#0A0C1A; --bg-surface:#12142B; --bg-elevated:#181B38;
+    --gold:#C9A84C; --gold-light:#F0C96E; --text-primary:#F5F5F0; --text-secondary:#B8BCD9; --text-muted:#5C6088;
+    --border:rgba(201,168,76,0.18); --border-soft:rgba(184,188,217,0.12);
+    --danger:#E74C4C; --warning:#F0A93E; --success:#3FBF7F; --info:#6FA8DC;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg-dark);color:var(--text-primary);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.6;min-height:100vh;}
+  h1,h2,h3,.serif{font-family:'Playfair Display',serif;font-weight:400;}
+  .mono{font-family:'DM Mono',monospace;}
+
+  #gate{position:fixed;inset:0;z-index:100;background:var(--bg-dark);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:22px;padding:24px;text-align:center;}
+  #gate .brand-tag{margin-bottom:8px;}
+  #gate h1{font-size:26px;color:var(--text-primary);}
+  #gate p{color:var(--text-secondary);font-size:14px;max-width:360px;}
+  #gate input{background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);padding:12px 16px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:15px;width:260px;text-align:center;letter-spacing:1px;}
+  #gate input:focus{outline:none;border-color:var(--gold);}
+  #gate button{background:var(--gold);color:var(--bg-dark);border:none;padding:12px 28px;border-radius:8px;font-weight:500;font-size:14px;cursor:pointer;letter-spacing:0.03em;}
+  #gate button:hover{background:var(--gold-light);}
+  #gate-error{color:var(--danger);font-size:13px;height:16px;}
+
+  #report{display:none;max-width:760px;margin:0 auto;background:var(--bg-dark);}
+  .cover{background:linear-gradient(180deg,var(--navy-deep) 0%, var(--bg-dark) 100%);border-bottom:1px solid var(--border);padding:48px 36px 36px;position:relative;overflow:hidden;}
+  .cover::before{content:'';position:absolute;top:-90px;right:-90px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle, rgba(201,168,76,0.10) 0%, transparent 70%);}
+  .brand-tag{display:inline-flex;align-items:center;gap:7px;font-size:11px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);border:0.5px solid var(--border);padding:5px 13px;border-radius:20px;background:rgba(201,168,76,0.06);}
+  .brand-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);}
+  .cover-name{font-size:34px;margin:20px 0 4px;color:var(--text-primary);position:relative;}
+  .cover-period{font-size:13px;color:var(--text-muted);margin-bottom:18px;}
+  .cover-quote{font-style:italic;font-size:16px;color:var(--gold-light);line-height:1.6;border-left:2px solid var(--border);padding-left:18px;max-width:520px;position:relative;}
+
+  .section{padding:32px 36px;border-bottom:1px solid var(--border-soft);}
+  .section-label{font-size:10px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:10px;margin-bottom:18px;}
+  .section-label::after{content:'';flex:1;height:0.5px;background:var(--border-soft);}
+  .section-title{font-size:21px;margin:0 0 6px;color:var(--text-primary);}
+  .section-subtitle{font-size:13px;color:var(--text-muted);margin-bottom:24px;}
+
+  .view-toggle{display:flex;gap:8px;margin-bottom:4px;}
+  .toggle-btn{flex:1;background:var(--bg-surface);border:0.5px solid var(--border-soft);color:var(--text-secondary);padding:12px;border-radius:9px;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;text-align:center;}
+  .toggle-btn.active{background:rgba(201,168,76,0.10);border-color:var(--gold);color:var(--gold-light);}
+  .month-tab{flex:1;background:var(--navy-deep);border:0.5px solid var(--border);color:var(--text-secondary);padding:14px;border-radius:10px;font-size:14px;font-weight:500;cursor:pointer;transition:all .15s;text-align:center;}
+  .month-tab.active{background:var(--gold);color:var(--bg-dark);border-color:var(--gold);}
+
+  .view{display:none;} .view.active{display:block;}
+  .month-view{display:none;} .month-view.active{display:block;}
+
+  .metrics-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:20px;}
+  .metric-card{background:var(--bg-surface);border:0.5px solid var(--border-soft);border-radius:10px;padding:16px;}
+  .metric-card.gold{border-color:var(--border);background:rgba(201,168,76,0.05);}
+  .metric-card.danger{border-color:rgba(231,76,76,0.25);background:rgba(231,76,76,0.05);}
+  .metric-card.success{border-color:rgba(63,191,127,0.25);background:rgba(63,191,127,0.05);}
+  .metric-label{font-size:10.5px;color:var(--text-muted);font-weight:500;letter-spacing:0.03em;margin-bottom:7px;text-transform:uppercase;}
+  .metric-value{font-size:20px;font-weight:500;color:var(--text-primary);font-family:'DM Mono',monospace;}
+  .metric-card.gold .metric-value{color:var(--gold-light);}
+  .metric-card.danger .metric-value{color:var(--danger);}
+  .metric-card.success .metric-value{color:var(--success);}
+  .metric-delta{font-size:11px;margin-top:4px;font-family:'DM Mono',monospace;}
+  .metric-delta.up{color:var(--danger);} .metric-delta.down{color:var(--success);} .metric-delta.neutral{color:var(--text-muted);}
+
+  .cat-block{margin-bottom:12px;border:0.5px solid var(--border-soft);border-radius:10px;overflow:hidden;background:var(--bg-surface);}
+  .cat-head{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;cursor:pointer;user-select:none;}
+  .cat-head:hover{background:rgba(255,255,255,0.02);}
+  .cat-name{font-size:14px;font-weight:500;color:var(--text-primary);display:flex;align-items:center;gap:9px;}
+  .cat-total{font-family:'DM Mono',monospace;font-size:14px;color:var(--gold-light);}
+  .cat-body{max-height:0;overflow:hidden;transition:max-height .25s ease;}
+  .cat-block.open .cat-body{max-height:600px;}
+  .cat-item{display:flex;justify-content:space-between;padding:9px 16px 9px 34px;font-size:13px;color:var(--text-secondary);border-top:0.5px solid var(--border-soft);}
+  .cat-item .val{font-family:'DM Mono',monospace;color:var(--text-primary);}
+
+  .alert-box{border-radius:10px;padding:16px 18px;display:flex;gap:12px;margin-bottom:14px;}
+  .alert-box.danger{background:rgba(231,76,76,0.06);border:0.5px solid rgba(231,76,76,0.22);}
+  .alert-box.warning{background:rgba(240,169,62,0.06);border:0.5px solid rgba(240,169,62,0.22);}
+  .alert-box.info{background:rgba(111,168,220,0.06);border:0.5px solid rgba(111,168,220,0.22);}
+  .alert-box.success{background:rgba(63,191,127,0.06);border:0.5px solid rgba(63,191,127,0.22);}
+  .alert-title{font-size:12.5px;font-weight:500;margin-bottom:4px;}
+  .alert-box.danger .alert-title{color:var(--danger);}
+  .alert-box.warning .alert-title{color:var(--warning);}
+  .alert-box.info .alert-title{color:var(--info);}
+  .alert-box.success .alert-title{color:var(--success);}
+  .alert-text{font-size:13px;line-height:1.6;color:var(--text-secondary);}
+
+  .chart-wrap{background:var(--bg-surface);border:0.5px solid var(--border-soft);border-radius:12px;padding:18px;margin-bottom:20px;}
+
+  .insight-card{background:var(--bg-surface);border:0.5px solid var(--border-soft);border-left:3px solid var(--gold);border-radius:8px;padding:16px 18px;margin-bottom:14px;}
+  .insight-num{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:rgba(201,168,76,0.15);color:var(--gold-light);font-size:11px;font-weight:700;margin-right:10px;font-family:'DM Mono',monospace;}
+  .insight-title{font-size:14px;font-weight:500;color:var(--text-primary);margin-bottom:7px;}
+  .insight-text{font-size:13px;line-height:1.65;color:var(--text-secondary);}
+  .insight-text b{color:var(--gold-light);font-weight:500;}
+  .benchmark-tag{display:inline-block;font-size:10.5px;color:var(--info);background:rgba(111,168,220,0.1);border:0.5px solid rgba(111,168,220,0.25);padding:2px 8px;border-radius:12px;margin-top:8px;}
+
+  .closing{background:var(--navy-deep);padding:40px 36px;text-align:center;}
+  .closing-quote{font-style:italic;font-size:18px;color:var(--text-secondary);max-width:480px;margin:0 auto 18px;line-height:1.7;}
+  .closing-quote b{color:var(--gold-light);font-weight:400;}
+  .closing-signature{font-size:12px;color:var(--text-muted);letter-spacing:0.04em;}
+
+  @media (max-width:480px){ .metrics-grid{grid-template-columns:1fr 1fr;} .cover-name{font-size:27px;} }
+</style>
+</head>
+<body>
+
+<div id="gate">
+  <div class="brand-tag"><span class="brand-dot"></span>GRÃO · GRUPO PRIMO</div>
+  <h1>Fechamento Financeiro</h1>
+  <p>Relatório confidencial de Tamires e Júnior. Digite a senha enviada por Matheus para acessar.</p>
+  <input type="password" id="pw" placeholder="Senha de acesso" onkeydown="if(event.key==='Enter')checkPw()">
+  <div id="gate-error"></div>
+  <button onclick="checkPw()">Acessar relatório</button>
+</div>
+
+<div id="report">
+
+  <div class="cover">
+    <div class="brand-tag"><span class="brand-dot"></span>GRÃO · GRUPO PRIMO</div>
+    <h1 class="cover-name">Tamires &amp; Júnior</h1>
+    <div class="cover-period">Fechamento Financeiro · Agosto – Setembro 2026</div>
+    <p class="cover-quote">Duas frentes, uma estratégia: entender como a empresa sustenta a vida pessoal é o primeiro passo para decidir com clareza.</p>
+  </div>
+
+  <div class="section" style="padding-bottom:0;">
+    <div class="view-toggle">
+      <button class="month-tab active" id="btn-ago" onclick="showMonth('ago')">Agosto</button>
+      <button class="month-tab" id="btn-set" onclick="showMonth('set')">Setembro</button>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- ======================= AGOSTO =============================== -->
+  <!-- ============================================================ -->
+  <div class="month-view active" id="month-ago">
+
+    <div class="section" style="padding-bottom:0;">
+      <div class="view-toggle">
+        <button class="toggle-btn active" id="btn-pessoal-ago" onclick="showView('ago','pessoal')">Visão Pessoal</button>
+        <button class="toggle-btn" id="btn-pj-ago" onclick="showView('ago','pj')">Visão Empresa (PJ)</button>
+      </div>
+    </div>
+
+    <div class="view active" id="view-pessoal-ago">
+      <div class="section">
+        <div class="section-label">Panorama pessoal · Agosto</div>
+        <div class="section-title">Para onde foi o dinheiro em casa</div>
+        <div class="metrics-grid">
+          <div class="metric-card"><div class="metric-label">Desp. obrigatórias</div><div class="metric-value">R$ 15.701,58</div></div>
+          <div class="metric-card"><div class="metric-label">Desp. não obrigatórias</div><div class="metric-value">R$ 8.364,46</div></div>
+          <div class="metric-card"><div class="metric-label">Financiamentos</div><div class="metric-value">R$ 1.861,63</div></div>
+          <div class="metric-card"><div class="metric-label">Projetos</div><div class="metric-value">R$ 400,00</div></div>
+        </div>
+        <div class="metric-card gold" style="margin-bottom:20px;">
+          <div class="metric-label">Total de saídas pessoais no mês</div>
+          <div class="metric-value">R$ 26.327,67</div>
+        </div>
+        <div class="chart-wrap"><canvas id="chartPessoalAgo" height="200"></canvas></div>
+      </div>
+
+      <div class="section">
+        <div class="section-label">Detalhamento</div>
+        <div class="section-title">Despesas obrigatórias</div>
+        <div class="section-subtitle">Total: R$ 15.701,58</div>
+        <div class="cat-block" onclick="this.classList.toggle('open')"><div class="cat-head"><span class="cat-name">🏠 Casa</span><span class="cat-total">R$ 1.631,23</span></div></div>
+        <div class="cat-block" onclick="this.classList.toggle('open')"><div class="cat-head"><span class="cat-name">🚗 Transporte</span><span class="cat-total">R$ 3.146,78</span></div></div>
+        <div class="cat-block" onclick="this.classList.toggle('open')"><div class="cat-head"><span class="cat-name">👨‍👩‍👧 Filhos e família</span><span class="cat-total">R$ 1.196,80</span></div></div>
+        <div class="cat-block" onclick="this.classList.toggle('open')"><div class="cat-head"><span class="cat-name">🍽️ Alimentação</span><span class="cat-total">R$ 261,53</span></div></div>
+        <div class="cat-block" onclick="this.classList.toggle('open')"><div class="cat-head"><span class="cat-name">❤️ Saúde</span><span class="cat-total">R$ 1.631,10</span></div></div>
+        <div class="cat-block" onclick="this.classList.toggle('open')"><div class="cat-head"><span class="cat-name">⚕️ Despesas médicas</span><span class="cat-total">R$ 1.586,73</span></div></div>
+        <div class="cat-block" onclick="this.classList.toggle('open')"><div class="cat-head"><span class="cat-name">✂️ Cuidados pessoais</span><span class="cat-total">R$ 502,00</span></div></div>
+        <div class="cat-block" onclick="this.classList.toggle('open')"><div class="cat-head"><span class="cat-name">🏦 Serviços financeiros</span><span class="cat-total">R$ 549,90</span></div></div>
+        <div class="cat-block" onclick="this.classList.toggle('open')"><div class="cat-head"><span class="cat-name">🧰 Prestadores de serviço</span><span class="cat-total">R$ 2.440,00</span></div></div>
+        <div class="cat-block" onclick="this.classList.toggle('open')"><div class="cat-head"><span class="cat-name">🎓 Educação</span><span class="cat-total">R$ 228,44</span></div></div>
+        <div class="cat-block" onclick="this.classList.toggle('open')"><div class="cat-head"><span class="cat-name">🧾 Impostos e taxas</span><span class="cat-total">R$ 1,29</span></div></div>
+        <div class="cat-block" onclick="this.classList.toggle('open')"><div class="cat-head"><span class="cat-name">🛒 Mercado</span><span class="cat-total">R$ 2.393,76</span></div></div>
+        <div class="cat-block" onclick="this.classList.toggle('open')"><div class="cat-head"><span class="cat-name">🛡️ Seguros</span><span class="cat-total">R$ 132,02</span></div></div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Despesas não obrigatórias</div>
+        <div class="section-subtitle">Total: R$ 8.364,46</div>
+        <div class="cat-block" onclick="this.classList.toggle('open')"><div class="cat-head"><span class="cat-name">📱 Assinaturas e serviços</span><span class="cat-total">R$ 317,09</span></div></div>
+        <div class="cat-block" onclick="this.classList.toggle('open')"><div class="cat-head"><span class="cat-name">🍔 Restaurantes</span><span class="cat-total">R$ 664,53</span></div></div>
+        <div class="cat-block" onclick="this.classList.toggle('open')"><div class="cat-head"><span class="cat-name">🛍️ Compras</span><span class="cat-total">R$ 1.782,75</span></div></div>
+        <div class="cat-block" onclick="this.classList.toggle('open')"><div class="cat-head"><span class="cat-name">🎉 Lazer</span><span class="cat-total">R$ 2.331,00</span></div></div>
+        <div class="cat-block" onclick="this.classList.toggle('open')"><div class="cat-head"><span class="cat-name">✈️ Viagens</span><span class="cat-total">R$ 872,65</span></div></div>
+        <div class="cat-block" onclick="this.classList.toggle('open')"><div class="cat-head"><span class="cat-name">🎁 Presentes e doações</span><span class="cat-total">R$ 100,00</span></div></div>
+        <div class="cat-block" onclick="this.classList.toggle('open')"><div class="cat-head"><span class="cat-name">👕 Vestuário</span><span class="cat-total">R$ 1.563,67</span></div></div>
+        <div class="cat-block" onclick="this.classList.toggle('open')"><div class="cat-head"><span class="cat-name">📦 Outros</span><span class="cat-total">R$ 732,77</span></div></div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Financiamentos, projetos e dívidas</div>
+        <div class="cat-block" onclick="this.classList.toggle('open')"><div class="cat-head"><span class="cat-name">🏠 Financiamento imobiliário</span><span class="cat-total">R$ 1.133,38</span></div></div>
+        <div class="cat-block" onclick="this.classList.toggle('open')"><div class="cat-head"><span class="cat-name">🚙 Financiamento veículo</span><span class="cat-total">R$ 728,25</span></div></div>
+        <div class="cat-block" onclick="this.classList.toggle('open')"><div class="cat-head"><span class="cat-name">🏗️ Casa · Projetos</span><span class="cat-total">R$ 400,00</span></div></div>
+        <div class="alert-box danger" style="margin-top:16px;">
+          <div><div class="alert-title">Saldo de dívidas e empréstimos: R$ 17.675,39</div>
+          <div class="alert-text">Refere-se à fatura do cartão de crédito Sicredi do casal, separada dos financiamentos já parcelados (imóvel e veículo).</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="view" id="view-pj-ago">
+      <div class="section">
+        <div class="section-label">Panorama da empresa · Agosto</div>
+        <div class="section-title">O que a operação gerou em agosto</div>
+        <div class="metrics-grid">
+          <div class="metric-card gold"><div class="metric-label">Faturamento bruto</div><div class="metric-value">R$ 78.811,10</div></div>
+          <div class="metric-card danger"><div class="metric-label">Despesas da empresa</div><div class="metric-value">R$ 48.876,13</div></div>
+        </div>
+        <div class="metric-card success" style="margin-bottom:8px;">
+          <div class="metric-label">Resultado líquido do mês</div>
+          <div class="metric-value">R$ 29.934,97</div>
+        </div>
+        <div class="section-subtitle" style="margin-top:4px;margin-bottom:20px;">As despesas consumiram 62,0% do faturamento bruto do mês.</div>
+        <div class="chart-wrap"><canvas id="chartPJAgo" height="200"></canvas></div>
+      </div>
+
+      <div class="section">
+        <div class="section-label">Detalhamento</div>
+        <div class="section-title">Despesas — empresa e autônomo</div>
+        <div class="section-subtitle">Total: R$ 48.876,13</div>
+        <div class="cat-block" onclick="this.classList.toggle('open')"><div class="cat-head"><span class="cat-name">💳 Meios de pagamento</span><span class="cat-total">R$ 79,00</span></div></div>
+        <div class="cat-block" onclick="this.classList.toggle('open')"><div class="cat-head"><span class="cat-name">🏗️ Infraestrutura</span><span class="cat-total">R$ 10.676,44</span></div></div>
+        <div class="cat-block" onclick="this.classList.toggle('open')"><div class="cat-head"><span class="cat-name">📣 Marketing</span><span class="cat-total">R$ 400,00</span></div></div>
+        <div class="cat-block" onclick="this.classList.toggle('open')"><div class="cat-head"><span class="cat-name">👥 Colaboradores</span><span class="cat-total">R$ 11.857,95</span></div></div>
+        <div class="cat-block" onclick="this.classList.toggle('open')"><div class="cat-head"><span class="cat-name">🧰 Prestadores de serviço — Empresa</span><span class="cat-total">R$ 1.402,62</span></div></div>
+        <div class="cat-block" onclick="this.classList.toggle('open')"><div class="cat-head"><span class="cat-name">🧾 Taxas e impostos</span><span class="cat-total">R$ 6.829,25</span></div></div>
+        <div class="cat-block" onclick="this.classList.toggle('open')"><div class="cat-head"><span class="cat-name">📦 Insumos e outros</span><span class="cat-total">R$ 17.630,87</span></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- ======================= SETEMBRO ============================== -->
+  <!-- ============================================================ -->
+  <div class="month-view" id="month-set">
+
+    <div class="section" style="padding-bottom:0;">
+      <div class="view-toggle">
+        <button class="toggle-btn active" id="btn-pessoal-set" onclick="showView('set','pessoal')">Visão Pessoal</button>
+        <button class="toggle-btn" id="btn-pj-set" onclick="showView('set','pj')">Visão Empresa (PJ)</button>
+      </div>
+    </div>
+
+    <div class="view active" id="view-pessoal-set">
+      <div class="section">
+        <div class="section-label">Panorama pessoal · Setembro</div>
+        <div class="section-title">Para onde foi o dinheiro em casa</div>
+
+        <div class="alert-box warning">
+          <div><div class="alert-title">Transporte concentrou 69,2% das despesas obrigatórias do mês</div>
+          <div class="alert-text">R$ 22.844,73 em Transporte, ante R$ 3.146,78 em agosto. Dado pendente de confirmação: compra de veículo, lançamento pontual ou item a reclassificar.</div></div>
+        </div>
+
+        <div class="metrics-grid">
+          <div class="metric-card"><div class="metric-label">Desp. obrigatórias</div><div class="metric-value">R$ 33.031,73</div></div>
+          <div class="metric-card"><div class="metric-label">Desp. não obrigatórias</div><div class="metric-value">R$ 9.478,67</div></div>
+          <div class="metric-card"><div class="metric-label">Financiamentos</div><div class="metric-value">R$ 713,46</div></div>
+          <div class="metric-card"><div class="metric-label">Dívidas</div><div class="metric-value">R$ 757,38</div></div>
+        </div>
+        <div class="metric-card gold" style="margin-bottom:20px;">
+          <div class="metric-label">Total de saídas pessoais no mês</div>
+          <div class="metric-value">R$ 43.223,86</div>
+        </div>
+        <div class="chart-wrap"><canvas id="chartPessoalSet" height="200"></canvas></div>
+      </div>
+
+      <div class="section">
+        <div class="section-label">Detalhamento</div>
+        <div class="section-title">Despesas obrigatórias</div>
+        <div class="section-subtitle">Total: R$ 33.031,73</div>
+        <div class="cat-block" onclick="this.classList.toggle('open')"><div class="cat-head"><span class="cat-name">🏠 Casa</span><span class="cat-total">R$ 1.745,72</span></div></div>
+        <div class="cat-block open" onclick="this.classList.toggle('open')"><div class="cat-head"><span class="cat-name">🚗 Transporte</span><span class="cat-total">R$ 22.844,73</span></div>
+          <div class="cat-body"><div class="cat-item"><span>Participação no total de obrigatórias</span><span class="val">69,2%</span></div></div>
+        </div>
+        <div class="cat-block" onclick="this.classList.toggle('open')"><div class="cat-head"><span class="cat-name">👨‍👩‍👧 Filhos e família</span><span class="cat-total">R$ 1.125,00</span></div></div>
+        <div class="cat-block" onclick="this.classList.toggle('open')"><div class="cat-head"><span class="cat-name">🍽️ Alimentação</span><span class="cat-total">R$ 1.813,45</span></div></div>
+        <div class="cat-block" onclick="this.classList.toggle('open')"><div class="cat-head"><span class="cat-name">❤️ Saúde</span><span class="cat-total">R$ 745,71</span></div></div>
+        <div class="cat-block" onclick="this.classList.toggle('open')"><div class="cat-head"><span class="cat-name">⚕️ Despesas médicas</span><span class="cat-total">R$ 650,00</span></div></div>
+        <div class="cat-block" onclick="this.classList.toggle('open')"><div class="cat-head"><span class="cat-name">✂️ Cuidados pessoais</span><span class="cat-total">R$ 290,00</span></div></div>
+        <div class="cat-block" onclick="this.classList.toggle('open')"><div class="cat-head"><span class="cat-name">🧰 Prestadores de serviço</span><span class="cat-total">R$ 2.755,11</span></div></div>
+        <div class="cat-block" onclick="this.classList.toggle('open')"><div class="cat-head"><span class="cat-name">🎓 Educação</span><span class="cat-total">R$ 227,52</span></div></div>
+        <div class="cat-block" onclick="this.classList.toggle('open')"><div class="cat-head"><span class="cat-name">🛒 Mercado</span><span class="cat-total">R$ 702,47</span></div></div>
+        <div class="cat-block" onclick="this.classList.toggle('open')"><div class="cat-head"><span class="cat-name">🛡️ Seguros</span><span class="cat-total">R$ 132,02</span></div></div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Despesas não obrigatórias</div>
+        <div class="section-subtitle">Total: R$ 9.478,67</div>
+        <div class="cat-block" onclick="this.classList.toggle('open')"><div class="cat-head"><span class="cat-name">📱 Assinaturas e serviços</span><span class="cat-total">R$ 1.026,27</span></div></div>
+        <div class="cat-block" onclick="this.classList.toggle('open')"><div class="cat-head"><span class="cat-name">🍔 Restaurantes</span><span class="cat-total">R$ 827,18</span></div></div>
+        <div class="cat-block open" onclick="this.classList.toggle('open')"><div class="cat-head"><span class="cat-name">🛍️ Compras</span><span class="cat-total">R$ 5.552,86</span></div>
+          <div class="cat-body"><div class="cat-item"><span>Participação no bloco não obrigatório</span><span class="val">58,6%</span></div></div>
+        </div>
+        <div class="cat-block" onclick="this.classList.toggle('open')"><div class="cat-head"><span class="cat-name">🎉 Lazer</span><span class="cat-total">R$ 694,00</span></div></div>
+        <div class="cat-block" onclick="this.classList.toggle('open')"><div class="cat-head"><span class="cat-name">✈️ Viagens</span><span class="cat-total">R$ 213,31</span></div></div>
+        <div class="cat-block" onclick="this.classList.toggle('open')"><div class="cat-head"><span class="cat-name">🏦 Tarifas bancárias</span><span class="cat-total">R$ 55,25</span></div></div>
+        <div class="cat-block" onclick="this.classList.toggle('open')"><div class="cat-head"><span class="cat-name">🎁 Presentes e doações</span><span class="cat-total">R$ 50,00</span></div></div>
+        <div class="cat-block" onclick="this.classList.toggle('open')"><div class="cat-head"><span class="cat-name">👕 Vestuário</span><span class="cat-total">R$ 1.059,80</span></div></div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Financiamentos e dívidas</div>
+        <div class="cat-block" onclick="this.classList.toggle('open')"><div class="cat-head"><span class="cat-name">🏠 Financiamento imobiliário</span><span class="cat-total">R$ 713,46</span></div></div>
+        <div class="alert-box info">
+          <div><div class="alert-title">Financiamento de veículo não aparece em setembro</div>
+          <div class="alert-text">Em agosto havia uma parcela de R$ 728,25. Dado pendente de confirmação: quitação, pausa ou reclassificação.</div></div>
+        </div>
+        <div class="cat-block" onclick="this.classList.toggle('open')"><div class="cat-head"><span class="cat-name">💳 Dívidas e empréstimos</span><span class="cat-total">R$ 757,38</span></div></div>
+        <div class="alert-box success">
+          <div><div class="alert-title">Saldo de dívidas caiu de R$ 17.675,39 para R$ 757,38</div>
+          <div class="alert-text">Queda de 95,7% em relação a agosto. Dado pendente de confirmação: se reflete pagamento efetivo da fatura do cartão Sicredi.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="view" id="view-pj-set">
+      <div class="section">
+        <div class="section-label">Panorama da empresa · Setembro</div>
+        <div class="section-title">O que a operação gerou em setembro</div>
+
+        <div class="metrics-grid">
+          <div class="metric-card gold"><div class="metric-label">Faturamento bruto</div><div class="metric-value">R$ 97.575,00</div></div>
+          <div class="metric-card danger"><div class="metric-label">Despesas da empresa</div><div class="metric-value">R$ 51.679,71</div></div>
+        </div>
+        <div class="metric-card success" style="margin-bottom:8px;">
+          <div class="metric-label">Resultado líquido do mês</div>
+          <div class="metric-value">R$ 45.895,29</div>
+        </div>
+        <div class="section-subtitle" style="margin-top:4px;margin-bottom:20px;">As despesas consumiram 53,0% do faturamento bruto do mês.</div>
+        <div class="chart-wrap"><canvas id="chartPJSet" height="200"></canvas></div>
+      </div>
+
+      <div class="section">
+        <div class="section-label">Detalhamento</div>
+        <div class="section-title">Despesas — empresa e autônomo</div>
+        <div class="section-subtitle">Total: R$ 51.679,71</div>
+        <div class="cat-block" onclick="this.classList.toggle('open')"><div class="cat-head"><span class="cat-name">💳 Meios de pagamento</span><span class="cat-total">R$ 79,00</span></div></div>
+        <div class="cat-block" onclick="this.classList.toggle('open')"><div class="cat-head"><span class="cat-name">🏗️ Infraestrutura</span><span class="cat-total">R$ 7.974,93</span></div></div>
+        <div class="cat-block open" onclick="this.classList.toggle('open')"><div class="cat-head"><span class="cat-name">👥 Colaboradores</span><span class="cat-total">R$ 17.060,67</span></div>
+          <div class="cat-body"><div class="cat-item"><span>Participação no total de despesas</span><span class="val">33,0%</span></div></div>
+        </div>
+        <div class="cat-block" onclick="this.classList.toggle('open')"><div class="cat-head"><span class="cat-name">🧰 Prestadores de serviço — Empresa</span><span class="cat-total">R$ 2.259,50</span></div></div>
+        <div class="cat-block" onclick="this.classList.toggle('open')"><div class="cat-head"><span class="cat-name">🧾 Taxas e impostos</span><span class="cat-total">R$ 5.399,99</span></div></div>
+        <div class="cat-block open" onclick="this.classList.toggle('open')"><div class="cat-head"><span class="cat-name">📦 Insumos e outros</span><span class="cat-total">R$ 18.905,62</span></div>
+          <div class="cat-body"><div class="cat-item"><span>Maior linha de custo da empresa</span><span class="val">36,6% do total</span></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- =================== COMPARATIVO & INSIGHTS ==================== -->
+  <!-- ============================================================ -->
+  <div class="section">
+    <div class="section-label">Comparativo</div>
+    <div class="section-title">Agosto → Setembro, lado a lado</div>
+    <div class="chart-wrap"><canvas id="chartComparativo" height="220"></canvas></div>
+
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-label">Saída pessoal total</div>
+        <div class="metric-value">R$ 26.327,67 → R$ 43.223,86</div>
+        <div class="metric-delta up">▲ +64,2%</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Despesas da empresa</div>
+        <div class="metric-value">R$ 48.876,13 → R$ 51.679,71</div>
+        <div class="metric-delta up">▲ +5,7%</div>
+      </div>
+      <div class="metric-card success">
+        <div class="metric-label">Resultado líquido PJ</div>
+        <div class="metric-value">R$ 29.934,97 → R$ 45.895,29</div>
+        <div class="metric-delta down">▲ +53,3%</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Colaboradores (PJ)</div>
+        <div class="metric-value">R$ 11.857,95 → R$ 17.060,67</div>
+        <div class="metric-delta up">▲ +43,9%</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Infraestrutura (PJ)</div>
+        <div class="metric-value">R$ 10.676,44 → R$ 7.974,93</div>
+        <div class="metric-delta down">▼ -25,3%</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Saldo de dívidas</div>
+        <div class="metric-value">R$ 17.675,39 → R$ 757,38</div>
+        <div class="metric-delta down">▼ -95,7%</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Financiamentos</div>
+        <div class="metric-value">R$ 1.861,63 → R$ 713,46</div>
+        <div class="metric-delta down">▼ -61,7%</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Leitura do planejador</div>
+    <div class="section-title">Pontos que levamos para a reunião</div>
+
+    <div class="insight-card">
+      <div class="insight-title"><span class="insight-num">1</span>O salto de Transporte distorce a leitura pessoal de setembro</div>
+      <div class="insight-text">Sem o valor atípico de Transporte (R$ 22.844,73), as saídas pessoais de setembro teriam sido R$ 20.379,13 — <b>abaixo</b> das R$ 26.327,67 de agosto. A leitura de "o casal gastou 64% a mais" só se sustenta se esse valor for recorrente. É o primeiro ponto a confirmar antes de qualquer conclusão sobre o padrão de consumo.</div>
+    </div>
+
+    <div class="insight-card">
+      <div class="insight-title"><span class="insight-num">2</span>Folha (Colaboradores) cresceu, mas segue dentro da faixa saudável</div>
+      <div class="insight-text">Colaboradores saltou de 24,3% para 33,0% do total de despesas da empresa (+R$ 5.202,72), enquanto Infraestrutura caiu de 21,8% para 15,4% (-R$ 2.701,51). Em proporção ao faturamento, Colaboradores foi de 15,0% em agosto para 17,5% em setembro — subiu, mas segue dentro da faixa de 15-30% da receita considerada usual para negócios de serviço.</div>
+      <span class="benchmark-tag">Referência: folha entre 15–30% da receita em negócios de serviço</span>
+    </div>
+
+    <div class="insight-card">
+      <div class="insight-title"><span class="insight-num">3</span>Margem líquida melhorou de agosto para setembro</div>
+      <div class="insight-text">A empresa converteu 38,0% do faturamento em resultado líquido em agosto (R$ 29.934,97 sobre R$ 78.811,10) e 47,0% em setembro (R$ 45.895,29 sobre R$ 97.575,00) — ambos acima da faixa de 20-30% considerada saudável para pequenos negócios de serviço. O crescimento de receita (+23,8%) superou com folga o crescimento das despesas (+5,7%).</div>
+      <span class="benchmark-tag">Referência: margem líquida saudável 20-30% em pequenos negócios de serviço</span>
+    </div>
+
+    <div class="insight-card">
+      <div class="insight-title"><span class="insight-num">4</span>Queda de 95,7% no saldo de dívidas é o destaque positivo do período</div>
+      <div class="insight-text">O saldo que era a fatura do cartão Sicredi (R$ 17.675,39) caiu para R$ 757,38. Se isso refletir quitação efetiva, é um movimento relevante de desalavancagem do casal — vale confirmar a origem do pagamento (recursos da PJ, reserva pessoal, ou outro) para registrar esse ganho como decisão, não coincidência.</div>
+    </div>
+
+    <div class="insight-card">
+      <div class="insight-title"><span class="insight-num">5</span>Compras concentrou quase 59% do bloco não obrigatório em setembro</div>
+      <div class="insight-text">R$ 5.552,86 em Compras (ante R$ 1.782,75 em agosto) puxou as despesas não obrigatórias de R$ 8.364,46 para R$ 9.478,67. Vale entender se há algo pontual (ex. equipar algo específico) por trás desse aumento.</div>
+    </div>
+  </div>
+
+  <div class="closing">
+    <p class="closing-quote">O objetivo não é gastar menos por gastar menos — é fazer o dinheiro da <b>empresa</b> e o dinheiro de <b>casa</b> conversarem entre si, de forma intencional.</p>
+    <div class="closing-signature">Matheus Melo · Financial Advisor Master · Grão | Grupo Primo</div>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<script>
+  const CORRECT_PW = "tamires2026";
+  function checkPw(){
+    const val = document.getElementById('pw').value.trim().toLowerCase();
+    if(val === CORRECT_PW){
+      document.getElementById('gate').style.display = 'none';
+      document.getElementById('report').style.display = 'block';
+      initCharts();
+    } else {
+      document.getElementById('gate-error').textContent = 'Senha incorreta. Tente novamente.';
+    }
+  }
+
+  function showMonth(which){
+    document.getElementById('month-ago').classList.toggle('active', which==='ago');
+    document.getElementById('month-set').classList.toggle('active', which==='set');
+    document.getElementById('btn-ago').classList.toggle('active', which==='ago');
+    document.getElementById('btn-set').classList.toggle('active', which==='set');
+  }
+
+  function showView(month, which){
+    document.getElementById('view-pessoal-'+month).classList.toggle('active', which==='pessoal');
+    document.getElementById('view-pj-'+month).classList.toggle('active', which==='pj');
+    document.getElementById('btn-pessoal-'+month).classList.toggle('active', which==='pessoal');
+    document.getElementById('btn-pj-'+month).classList.toggle('active', which==='pj');
+  }
+
+  function initCharts(){
+    const legendOpts = { position:'bottom', labels:{ color:'#B8BCD9', font:{family:'DM Sans', size:10} } };
+
+    new Chart(document.getElementById('chartPessoalAgo'), {
+      type: 'doughnut',
+      data: { labels: ['Obrigatórias','Não obrigatórias','Financiamentos','Projetos'],
+        datasets: [{ data: [15701.58, 8364.46, 1861.63, 400.00],
+          backgroundColor: ['#C9A84C','#6FA8DC','#F0A93E','#3FBF7F'], borderColor:'#12142B', borderWidth:3 }] },
+      options: { plugins: { legend: legendOpts } }
+    });
+
+    new Chart(document.getElementById('chartPJAgo'), {
+      type: 'doughnut',
+      data: { labels: ['Insumos e outros','Colaboradores','Infraestrutura','Taxas e impostos','Marketing','Prestadores de serviço','Meios de pagamento'],
+        datasets: [{ data: [17630.87, 11857.95, 10676.44, 6829.25, 400.00, 1402.62, 79.00],
+          backgroundColor: ['#C9A84C','#E74C4C','#6FA8DC','#F0A93E','#3FBF7F','#9B8CD9','#5C6088'], borderColor:'#12142B', borderWidth:3 }] },
+      options: { plugins: { legend: legendOpts } }
+    });
+
+    new Chart(document.getElementById('chartPessoalSet'), {
+      type: 'doughnut',
+      data: { labels: ['Obrigatórias','Não obrigatórias','Financiamentos','Dívidas'],
+        datasets: [{ data: [33031.73, 9478.67, 713.46, 757.38],
+          backgroundColor: ['#C9A84C','#6FA8DC','#F0A93E','#E74C4C'], borderColor:'#12142B', borderWidth:3 }] },
+      options: { plugins: { legend: legendOpts } }
+    });
+
+    new Chart(document.getElementById('chartPJSet'), {
+      type: 'doughnut',
+      data: { labels: ['Insumos e outros','Colaboradores','Infraestrutura','Taxas e impostos','Prestadores de serviço','Meios de pagamento'],
+        datasets: [{ data: [18905.62, 17060.67, 7974.93, 5399.99, 2259.50, 79.00],
+          backgroundColor: ['#C9A84C','#E74C4C','#6FA8DC','#F0A93E','#9B8CD9','#5C6088'], borderColor:'#12142B', borderWidth:3 }] },
+      options: { plugins: { legend: legendOpts } }
+    });
+
+    new Chart(document.getElementById('chartComparativo'), {
+      type: 'bar',
+      data: {
+        labels: ['Saída pessoal','Despesas PJ','Colaboradores','Infraestrutura','Saldo dívidas'],
+        datasets: [
+          { label:'Agosto', data:[26327.67, 48876.13, 11857.95, 10676.44, 17675.39], backgroundColor:'#C9A84C' },
+          { label:'Setembro', data:[43223.86, 51679.71, 17060.67, 7974.93, 757.38], backgroundColor:'#6FA8DC' }
+        ]
+      },
+      options: {
+        plugins: { legend: legendOpts },
+        scales: {
+          x: { ticks:{ color:'#B8BCD9', font:{size:10} }, grid:{ color:'rgba(184,188,217,0.06)' } },
+          y: { ticks:{ color:'#5C6088', font:{size:10} }, grid:{ color:'rgba(184,188,217,0.06)' } }
+        }
+      }
+    });
+  }
+</script>
+
+</body>
+</html>
